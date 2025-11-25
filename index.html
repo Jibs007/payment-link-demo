@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FreshMart - Busha Payment Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="shopPage" class="shop-page active">
+        <div class="header">
+          <h1>🥗 FreshMart</h1>
+          <p>Premium fresh produce delivered to your doorstep</p>
+          <button class="cart-icon" onclick="toggleCart()">
+            🛒 Cart
+            <span class="cart-count" id="cartCount">0</span>
+          </button>
+        </div>
+
+        <div class="products-grid">
+          <div class="product-card">
+            <div class="product-image avocado">🥑</div>
+            <div class="product-info">
+              <div class="product-title">Premium Hass Avocados</div>
+              <div class="product-description">
+                Fresh, creamy avocados from local farms. Pack of 6 pieces.
+              </div>
+              <div class="product-price">
+                <div class="price-ngn">₦8,500</div>
+                <div class="price-crypto">~5.65 USDT</div>
+              </div>
+              <button
+                class="buy-button"
+                onclick="addToCart('Premium Hass Avocados', 8500, '🥑')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image rice">🍚</div>
+            <div class="product-info">
+              <div class="product-title">Organic Jasmine Rice</div>
+              <div class="product-description">
+                Premium quality organic jasmine rice. 5kg bag.
+              </div>
+              <div class="product-price">
+                <div class="price-ngn">₦12,000</div>
+                <div class="price-crypto">~7.98 USDT</div>
+              </div>
+              <button
+                class="buy-button"
+                onclick="addToCart('Organic Jasmine Rice', 12000, '🍚')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image fish">🐟</div>
+            <div class="product-info">
+              <div class="product-title">Fresh Atlantic Salmon</div>
+              <div class="product-description">
+                Wild-caught salmon, rich in omega-3. 1kg fillet.
+              </div>
+              <div class="product-price">
+                <div class="price-ngn">₦25,000</div>
+                <div class="price-crypto">~16.62 USDT</div>
+              </div>
+              <button
+                class="buy-button"
+                onclick="addToCart('Fresh Atlantic Salmon', 25000, '🐟')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image tomato">🍅</div>
+            <div class="product-info">
+              <div class="product-title">Roma Tomatoes</div>
+              <div class="product-description">
+                Fresh, juicy Roma tomatoes perfect for cooking. 2kg bag.
+              </div>
+              <div class="product-price">
+                <div class="price-ngn">₦4,500</div>
+                <div class="price-crypto">~2.99 USDT</div>
+              </div>
+              <button
+                class="buy-button"
+                onclick="addToCart('Roma Tomatoes', 4500, '🍅')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image banana">🍌</div>
+            <div class="product-info">
+              <div class="product-title">Sweet Bananas</div>
+              <div class="product-description">
+                Ripe, sweet bananas perfect for snacking. Bundle of 12.
+              </div>
+              <div class="product-price">
+                <div class="price-ngn">₦3,200</div>
+                <div class="price-crypto">~2.13 USDT</div>
+              </div>
+              <button
+                class="buy-button"
+                onclick="addToCart('Sweet Bananas', 3200, '🍌')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image chicken">🐔</div>
+            <div class="product-info">
+              <div class="product-title">Free-Range Chicken</div>
+              <div class="product-description">
+                Fresh, locally-sourced free-range chicken. Whole bird, 2kg.
+              </div>
+              <div class="product-price">
+                <div class="price-ngn">₦15,500</div>
+                <div class="price-crypto">~10.30 USDT</div>
+              </div>
+              <button
+                class="buy-button"
+                onclick="addToCart('Free-Range Chicken', 15500, '🐔')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image milk">🥛</div>
+            <div class="product-info">
+              <div class="product-title">Fresh Whole Milk</div>
+              <div class="product-description">
+                Farm-fresh whole milk, pasteurized. 1 liter carton.
+              </div>
+              <div class="product-price">
+                <div class="price-ngn">₦1,800</div>
+                <div class="price-crypto">~1.20 USDT</div>
+              </div>
+              <button
+                class="buy-button"
+                onclick="addToCart('Fresh Whole Milk', 1800, '🥛')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image bread">🍞</div>
+            <div class="product-info">
+              <div class="product-title">Artisan Sourdough</div>
+              <div class="product-description">
+                Freshly baked artisan sourdough bread. 800g loaf.
+              </div>
+              <div class="product-price">
+                <div class="price-ngn">₦2,500</div>
+                <div class="price-crypto">~1.66 USDT</div>
+              </div>
+              <button
+                class="buy-button"
+                onclick="addToCart('Artisan Sourdough', 2500, '🍞')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image pasta">🍝</div>
+            <div class="product-info">
+              <div class="product-title">Italian Pasta</div>
+              <div class="product-description">
+                Premium durum wheat pasta, imported from Italy. 500g pack.
+              </div>
+              <div class="product-price">
+                <div class="price-ngn">₦3,800</div>
+                <div class="price-crypto">~2.53 USDT</div>
+              </div>
+              <button
+                class="buy-button"
+                onclick="addToCart('Italian Pasta', 3800, '🍝')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="checkoutPage" class="checkout-page">
+        <div class="checkout-header">
+          <button class="back-to-shop" onclick="showShop()">
+            ← Back to Shop
+          </button>
+          <h2>Checkout</h2>
+          <p>Review your order and complete your purchase</p>
+        </div>
+
+        <div class="order-summary">
+          <h3 class="summary-title">Order Summary</h3>
+          <div id="orderItems"></div>
+          <div class="summary-total">
+            <span>Total:</span>
+            <span id="orderTotal">₦0</span>
+          </div>
+        </div>
+
+        <form
+          action="https://staging.pay.busha.co/pay"
+          method="POST"
+          class="payment-options"
+        >
+          <input type="hidden" name="local_amount" value="" id="local_amount" />
+          <input
+            type="hidden"
+            name="local_currency"
+            value=""
+            id="local_currency"
+          />
+          <input
+            type="hidden"
+            name="public_key"
+            value="pub_qNLwAq97p8CwD56K8qKb6"
+          />
+          <input type="hidden" name="fixed_amount" value="true" />
+          <input type="hidden" name="meta[email]" value="olamide@busha.co" />
+          <input
+            type="hidden"
+            name="meta[phone_number]"
+            value="+234 8039393939"
+          />
+          <input type="hidden" name="reference" value="REF-reff1" />
+          <input type="hidden" name="callback_url" value="https://google.com" />
+          <input type="hidden" name="parentOrigin" value="https://google.com" />
+
+          <h3 class="payment-title">Payment Options</h3>
+          <div class="success-message" id="successMessage">
+            ✅ Payment Confirmed! Your order has been placed successfully.
+          </div>
+
+          <button
+            class="payment-button payment-regular"
+            onclick="processRegularPayment()"
+          >
+            💳 Pay with Card/Bank Transfer
+          </button>
+
+          <button
+            class="payment-button payment-busha"
+            <!--
+            onclick="openBushaPayment()"
+            --
+          >
+            > 🚀 Pay with Busha (Crypto)
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+      <div class="cart-header">
+        <h3 class="cart-title">Shopping Cart</h3>
+        <button class="close-cart" onclick="toggleCart()">×</button>
+      </div>
+      <div class="cart-items" id="cartItems">
+        <p style="color: #6b7280; text-align: center; padding: 40px 0">
+          Your cart is empty
+        </p>
+      </div>
+      <div class="cart-total" id="cartTotal" style="display: none">
+        <div class="total-amount">
+          Total: <span id="cartTotalAmount">₦0</span>
+        </div>
+        <button class="checkout-button" onclick="proceedToCheckout()">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
