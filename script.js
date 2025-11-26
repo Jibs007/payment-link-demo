@@ -51,6 +51,8 @@ function updateCartUI() {
     }
 }
 
+
+
 function showCartNotification(itemName) {
     const notification = document.createElement("div");
     notification.style.cssText = `
@@ -83,12 +85,14 @@ function proceedToCheckout() {
     if (cart.length === 0) return;
     toggleCart();
     showCheckout();
+
 }
 
 function showCheckout() {
     document.getElementById("shopPage").style.display = "none";
     document.getElementById("checkoutPage").classList.add("active");
     updateOrderSummary();
+    console.log(cart)
 }
 
 function showShop() {

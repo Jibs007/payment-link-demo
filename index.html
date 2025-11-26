@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FreshMart - Busha Payment Demo</title>
     <link rel="stylesheet" href="styles.css" />
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@busha/commerce-js@1.0.12/dist/index.min.js"></script>
+
+    <script> -->
+      <!-- const BushaCommerce = window.BushaCommerce; -->
+    </script>
   </head>
   <body>
     <div class="container">
@@ -220,7 +225,7 @@
         </div>
 
         <form
-          action="https://staging.pay.busha.co/pay"
+          action="http://localhost:3000/pay"
           method="POST"
           class="payment-options"
         >
@@ -228,7 +233,7 @@
           <input
             type="hidden"
             name="local_currency"
-            value=""
+            value="USDT"
             id="local_currency"
           />
           <input
@@ -237,7 +242,7 @@
             value="pub_qNLwAq97p8CwD56K8qKb6"
           />
           <input type="hidden" name="fixed_amount" value="true" />
-          <input type="hidden" name="meta[email]" value="olamide@busha.co" />
+          <input type="hidden" name="meta[email]" value="ajibola@busha.co" />
           <input
             type="hidden"
             name="meta[phone_number]"
