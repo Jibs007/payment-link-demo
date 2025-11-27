@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FreshMart - Busha Payment Demo</title>
     <link rel="stylesheet" href="styles.css" />
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@busha/commerce-js@1.0.12/dist/index.min.js"></script>
 
-    <script> -->
-      <!-- const BushaCommerce = window.BushaCommerce; -->
+    <script src="./index.min.js"></script>
+
+    <script>
+      const BushaCommerce = window.BushaCommerce;
     </script>
   </head>
   <body>
@@ -224,32 +225,56 @@
           </div>
         </div>
 
-        <form
-          action="http://localhost:3000/pay"
-          method="POST"
-          class="payment-options"
-        >
-          <input type="hidden" name="local_amount" value="" id="local_amount" />
+        <form method="POST" class="payment-options" id="form">
+          <input type="hidden" name="quote_amount" value="" id="quote_amount" />
           <input
             type="hidden"
-            name="local_currency"
-            value="USDT"
-            id="local_currency"
+            name="quote_currency"
+            value="NGN"
+            id="quote_currency"
+          />
+          <input
+            type="hidden"
+            name="source_currency"
+            value="BTC"
+            id="source_currency"
+          />
+          <input
+            type="hidden"
+            name="target_currency"
+            value="BTC"
+            id="target_currency"
           />
           <input
             type="hidden"
             name="public_key"
-            value="pub_qNLwAq97p8CwD56K8qKb6"
+            value="pub_AoD4QPMRu7d1ykRL5qiSw"
+            id="public_key"
           />
           <input type="hidden" name="fixed_amount" value="true" />
-          <input type="hidden" name="meta[email]" value="ajibola@busha.co" />
+          <input
+            type="hidden"
+            name="meta[email]"
+            id="email"
+            value="ajibola@busha.co"
+          />
           <input
             type="hidden"
             name="meta[phone_number]"
             value="+234 8039393939"
           />
-          <input type="hidden" name="reference" value="REF-reff1" />
-          <input type="hidden" name="callback_url" value="https://google.com" />
+          <input
+            type="hidden"
+            name="reference"
+            value="REF-reff1"
+            id="reference"
+          />
+          <input
+            type="hidden"
+            name="callback_url"
+            value="http://127.0.0.1:5501/index.html"
+            id="callback_url"
+          />
           <input type="hidden" name="parentOrigin" value="https://google.com" />
 
           <h3 class="payment-title">Payment Options</h3>
@@ -264,12 +289,7 @@
             💳 Pay with Card/Bank Transfer
           </button>
 
-          <button
-            class="payment-button payment-busha"
-            <!--
-            onclick="openBushaPayment()"
-            --
-          >
+          <button class="payment-button payment-busha">
             🚀 Pay with Busha (Crypto)
           </button>
         </form>
@@ -298,5 +318,56 @@
     </div>
 
     <script src="script.js"></script>
+
+    <script>
+      (function () {
+        const form = document.getElementById("form");
+
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const BushaCommerce = window.BushaCommerce;
+
+          if (BushaCommerce) {
+            console.log("up and runinng!");
+
+            const email = document.getElementById("email").value;
+
+            const payload = {
+              reference:
+                document.getElementById("reference").value ||
+                `ref_${new Date().getTime()}`,
+              public_key: document.getElementById("public_key").value,
+              quote_amount: String(
+                document.getElementById("quote_amount").value
+              ),
+              quote_currency: document.getElementById("quote_currency").value,
+              target_currency: document.getElementById("target_currency").value,
+              source_currency: document.getElementById("source_currency").value,
+              callback_url: document.getElementById("callback_url").value || "",
+              onClose: () => {
+                console.log("Payment cancelled!");
+                document.getElementById(
+                  "reference"
+                ).value = `ref_${new Date().getTime()}`;
+              },
+              onSuccess: (d) => {
+                console.log(d);
+              },
+            };
+
+            if (name || email) {
+              payload.meta = {};
+
+              if (email) {
+                payload.meta.email = email;
+              }
+            }
+
+            BushaCommerce(payload);
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
