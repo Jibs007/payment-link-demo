@@ -273,18 +273,16 @@
           <input type="hidden" name="parentOrigin" value="https://google.com" />
 
           <h3 class="payment-title">Payment Options</h3>
-          <div class="success-message" id="successMessage">
-            ✅ Payment Confirmed! Your order has been placed successfully.
-          </div>
 
           <button
+            type="button"
             class="payment-button payment-regular"
             onclick="processRegularPayment()"
           >
             💳 Pay with Card/Bank Transfer
           </button>
 
-          <button class="payment-button payment-busha">
+          <button type="submit" class="payment-button payment-busha">
             🚀 Pay with Busha (Crypto)
           </button>
         </form>
@@ -312,6 +310,42 @@
       </div>
     </div>
 
+    <div class="success-modal-overlay" id="successModalOverlay">
+      <div class="success-modal">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+
+        <h2>Payment Successful! 🎉</h2>
+        <p>Your order has been confirmed and is being processed.</p>
+
+        <div class="order-details">
+          <div class="order-details-row">
+            <span>Order Number:</span>
+            <span id="successOrderNumber">#12345</span>
+          </div>
+          <div class="order-details-row">
+            <span>Items:</span>
+            <span id="successItemCount">3 items</span>
+          </div>
+          <div class="order-details-row">
+            <span>Payment Method:</span>
+            <span id="successPaymentMethod">Crypto</span>
+          </div>
+          <div class="order-details-row">
+            <span>Total Paid:</span>
+            <span id="successTotalAmount">₦29,500</span>
+          </div>
+        </div>
+
+        <button class="success-modal-button" onclick="closeSuccessModal()">
+          Continue Shopping
+        </button>
+      </div>
+    </div>
+
     <script src="script.js"></script>
 
     <script>
@@ -324,7 +358,7 @@
           const BushaCommerce = window.BushaCommerce;
 
           if (BushaCommerce) {
-            console.log("up and runinng!");
+            console.log("BushaCommerce initialized!");
 
             const email = document.getElementById("email").value;
 
@@ -346,17 +380,14 @@
                   "reference"
                 ).value = `ref_${new Date().getTime()}`;
               },
-              onSuccess: (d) => {
-                console.log(d);
+              onSuccess: (data) => {
+                console.log("Payment successful:", data);
+                showSuccessModal("Crypto");
               },
             };
 
-            if (name || email) {
-              payload.meta = {};
-
-              if (email) {
-                payload.meta.email = email;
-              }
+            if (email) {
+              payload.meta = { email: email };
             }
 
             BushaCommerce(payload);

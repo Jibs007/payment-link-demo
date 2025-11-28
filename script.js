@@ -40,13 +40,11 @@ function updateCartUI() {
                     <div class="cart-item">
                         <div class="cart-item-info">
                             <h4>${item.emoji} ${item.name}</h4>
-                            <div class="cart-item-price">₦${item.price.toLocaleString()} x ${
-          item.quantity
-        }</div>
+                            <div class="cart-item-price">₦${item.price.toLocaleString()} x ${item.quantity
+          }</div>
                         </div>
-                        <button class="remove-item" onclick="removeFromCart('${
-                          item.name
-                        }')">Remove</button>
+                        <button class="remove-item" onclick="removeFromCart('${item.name
+          }')">Remove</button>
                     </div>
                 `
       )
@@ -93,7 +91,6 @@ function showCheckout() {
   document.getElementById("shopPage").style.display = "none";
   document.getElementById("checkoutPage").classList.add("active");
   updateOrderSummary();
-  console.log(cart);
 }
 
 function showShop() {
@@ -104,8 +101,8 @@ function showShop() {
 function updateOrderSummary() {
   const orderItems = document.getElementById("orderItems");
   const orderTotal = document.getElementById("orderTotal");
-  const localAmountInput = document.getElementById("quote_amount");
-  const localCurrencyInput = document.getElementById("quote_currency");
+  const quoteAmountInput = document.getElementById("quote_amount");
+  const quoteCurrencyInput = document.getElementById("quote_currency");
 
   orderItems.innerHTML = cart
     .map(
@@ -113,171 +110,54 @@ function updateOrderSummary() {
                 <div class="summary-item">
                     <span>${item.emoji} ${item.name} (x${item.quantity})</span>
                     <span>₦${(
-                      item.price * item.quantity
-                    ).toLocaleString()}</span>
+          item.price * item.quantity
+        ).toLocaleString()}</span>
                 </div>
             `
     )
     .join("");
 
   orderTotal.textContent = `₦${cartTotal.toLocaleString()}`;
-  localAmountInput.value = cartTotal;
-  localCurrencyInput.value = "NGN";
-  // localAmountInput.value = '25'
-  // localCurrencyInput.value = 'USDT'
+  quoteAmountInput.value = cartTotal;
+  quoteCurrencyInput.value = "NGN";
 }
 
 function processRegularPayment() {
-  const successMessage = document.getElementById("successMessage");
-  successMessage.style.display = "block";
-  setTimeout(() => {
-    cart = [];
-    updateCartUI();
-    showShop();
-    successMessage.style.display = "none";
-  }, 3000);
+  showSuccessModal("Card/Bank Transfer");
 }
 
-async function openBushaPayment() {
-  console.log("1000");
-
-  // try {
-  //     const response = await fetch(
-  //         "https://api.sandbox.busha.so/v1/payments/links",
-  //         {
-  //             method: "POST",
-  //             headers: {
-  //                 "X-BU-PROFILE-ID": "BUS_CQr0jPzGGzmn1uW5W7OVs",
-  //                 Authorization:
-  //                     "Bearer RmFNQjJVVEtVVzpyT1pzT0d6RkFpOFhOekVaY2NNdHpKdFdiUHRNVVlnOVNQNHlFbmlEOXNONE0wbE8=",
-  //                 "Content-Type": "application/json",
-  //             },
-  //             body: JSON.stringify({
-  //                 fixed: true,
-  //                 one_time: true,
-  //                 name: `FreshMart Order #${Date.now()}`,
-  //                 title: "Complete Your FreshMart Purchase",
-  //                 description: `Payment for ${cart.length} items from FreshMart`,
-  //                 quote_amount: cartTotal.toString(),
-  //                 quote_currency: "NGN",
-  //                 target_currency: "USDT",
-  //                 require_extra_info: [
-  //                     {
-  //                         field_name: "email",
-  //                         required: true,
-  //                     },
-  //                 ],
-  //             }),
-  //         }
-  //     );
-
-  //     if (!response.ok) {
-  //         throw new Error("Failed to create payment link");
-  //     }
-
-  //     const paymentLinkData = await response.json();
-  //     const paymentLinkId = paymentLinkData.data.id;
-  //     const queryParams = {
-  //         firstName: 'John',
-  //         email: 'john@example.com',
-  //         lastName: 'Jibs'
-  //     };
-
-  //     const queryString = Object.keys(queryParams)
-  //         .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
-  //         .join('&');
-
-  //     const paymentUrl = `https://staging.pay.busha.co/charges/${paymentLinkId}#/payment-method?${queryString}`;
-  //     showPaymentModal(paymentUrl);
-  // } catch (error) {
-  //     console.error("Error creating payment link:", error);
-  //     alert("Error creating payment link. Please try again.");
-  // }
+function generateOrderNumber() {
+  return `ORD${Date.now().toString().slice(-8)}`;
 }
 
-function showPaymentModal(paymentUrl) {
-  const modal = document.createElement("div");
-  modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        z-index: 2000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    `;
+function showSuccessModal(paymentMethod = "Crypto") {
+  const overlay = document.getElementById("successModalOverlay");
+  const orderNumber = generateOrderNumber();
+  const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  modal.innerHTML = `
-        <div style="background: white; border-radius: 16px; width: 100%; max-width: 900px; height: 95vh; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
-            <div style="padding: 20px; border-bottom: 1px solid #e8e8e8; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
-                <h3 style="margin: 0; color: #1a1a1a;">Complete Payment with Busha</h3>
-                <button onclick="closePaymentModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #6b7280;">×</button>
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
-                <div id="iframeContainer" style="flex: 1; min-height: 0;">
-                    <p style="text-align: center; padding: 40px; color: #6b7280;">Loading payment page...</p>
-                </div>
-                <div style="padding: 15px 20px; border-top: 1px solid #e8e8e8; text-align: center; flex-shrink: 0;">
-                    <button onclick="confirmPayment()" style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 0.9rem;">Mark as Paid (Demo)</button>
-                </div>
-            </div>
-        </div>
-    `;
+  document.getElementById("successOrderNumber").textContent = orderNumber;
+  document.getElementById("successItemCount").textContent = `${itemCount} item${itemCount !== 1 ? "s" : ""
+    }`;
+  document.getElementById("successPaymentMethod").textContent = paymentMethod;
+  document.getElementById(
+    "successTotalAmount"
+  ).textContent = `₦${cartTotal.toLocaleString()}`;
 
-  document.body.appendChild(modal);
+  overlay.classList.add("active");
 
-  setTimeout(() => {
-    const container = document.getElementById("iframeContainer");
-    if (container) {
-      container.innerHTML = `
-                <iframe 
-                    src="${paymentUrl}" 
-                    width="100%" 
-                    height="100%" 
-                    style="border: none; display: block; min-height: 100%;"
-                    scrolling="yes"
-                    onerror="handleIframeError()"
-                ></iframe>
-            `;
-    }
-  }, 500);
-
-  window.currentPaymentModal = modal;
+  console.log("Order placed:", {
+    orderNumber,
+    items: cart,
+    total: cartTotal,
+    paymentMethod,
+  });
 }
 
-function closePaymentModal() {
-  if (window.currentPaymentModal) {
-    window.currentPaymentModal.remove();
-    window.currentPaymentModal = null;
-  }
-}
+function closeSuccessModal() {
+  const overlay = document.getElementById("successModalOverlay");
+  overlay.classList.remove("active");
 
-function confirmPayment() {
-  closePaymentModal();
-  const successMessage = document.getElementById("successMessage");
-  successMessage.innerHTML =
-    "✅ Payment completed with Busha! Your order has been confirmed.";
-  successMessage.style.display = "block";
-  setTimeout(() => {
-    cart = [];
-    updateCartUI();
-    showShop();
-    successMessage.style.display = "none";
-  }, 3000);
-}
-
-function handleIframeError() {
-  const container = document.getElementById("iframeContainer");
-  if (container) {
-    container.innerHTML = `
-            <div style="color: #dc2626; padding: 20px; border: 1px solid #fecaca; border-radius: 8px; background: #fef2f2;">
-                <p><strong>Payment page couldn't load in iframe</strong></p>
-                <p>Please use one of the direct links above to complete payment.</p>
-            </div>
-        `;
-  }
+  cart = [];
+  updateCartUI();
+  showShop();
 }
