@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FreshMart - Busha Payment Demo</title>
     <link rel="stylesheet" href="styles.css" />
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@busha/commerce-js@1.0.12/dist/index.min.js"></script>
 
-    <script> -->
-      <!-- const BushaCommerce = window.BushaCommerce; -->
+    <script src="https://cdn.jsdelivr.net/gh/bushaHQ/commerce-js@develop/output/index.min.js"></script>
+
+    <script>
+      const BushaCommerce = window.BushaCommerce
     </script>
   </head>
   <body>
@@ -224,52 +225,59 @@
           </div>
         </div>
 
-        <form
-          action="http://localhost:3000/pay"
-          method="POST"
-          class="payment-options"
-        >
-          <input type="hidden" name="local_amount" value="" id="local_amount" />
+        <form method="POST" class="payment-options" id="form">
+          <input type="hidden" name="quote_amount" value="" id="quote_amount" />
           <input
             type="hidden"
-            name="local_currency"
-            value="USDT"
-            id="local_currency"
+            name="quote_currency"
+            value="NGN"
+            id="quote_currency"
+          />
+          <input
+            type="hidden"
+            name="source_currency"
+            value="BTC"
+            id="source_currency"
+          />
+          <input
+            type="hidden"
+            name="target_currency"
+            value="BTC"
+            id="target_currency"
           />
           <input
             type="hidden"
             name="public_key"
-            value="pub_qNLwAq97p8CwD56K8qKb6"
+            value="pub_U8dArODbxzIVlAz1TJZM4"
+            id="public_key"
           />
           <input type="hidden" name="fixed_amount" value="true" />
-          <input type="hidden" name="meta[email]" value="ajibola@busha.co" />
+          <input
+            type="hidden"
+            name="meta[email]"
+            id="email"
+            value="ajibola@busha.co"
+          />
           <input
             type="hidden"
             name="meta[phone_number]"
             value="+234 8039393939"
           />
-          <input type="hidden" name="reference" value="REF-reff1" />
-          <input type="hidden" name="callback_url" value="https://google.com" />
+          <!-- ❌ REMOVED: <input type="hidden" name="reference" value="" id="reference" /> -->
+          <input type="hidden" name="callback_url" value="" id="callback_url" />
           <input type="hidden" name="parentOrigin" value="https://google.com" />
 
           <h3 class="payment-title">Payment Options</h3>
-          <div class="success-message" id="successMessage">
-            ✅ Payment Confirmed! Your order has been placed successfully.
-          </div>
 
           <button
+            type="button"
             class="payment-button payment-regular"
             onclick="processRegularPayment()"
           >
             💳 Pay with Card/Bank Transfer
           </button>
 
-          <button
-            class="payment-button payment-busha"
-            <!--
-            onclick="openBushaPayment()"
-            --
-          >
+          <button type="submit" class="payment-button payment-busha">
             🚀 Pay with Busha (Crypto)
           </button>
         </form>
@@ -297,6 +305,131 @@
       </div>
     </div>
 
+    <div class="success-modal-overlay" id="successModalOverlay">
+      <div class="success-modal">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+
+        <h2>Payment Successful! 🎉</h2>
+        <p>Your order has been confirmed and is being processed.</p>
+
+        <div class="order-details">
+          <div class="order-details-row">
+            <span>Order Number:</span>
+            <span id="successOrderNumber">#12345</span>
+          </div>
+          <div class="order-details-row">
+            <span>Items:</span>
+            <span id="successItemCount">3 items</span>
+          </div>
+          <div class="order-details-row">
+            <span>Payment Method:</span>
+            <span id="successPaymentMethod">Crypto</span>
+          </div>
+          <div class="order-details-row">
+            <span>Total Paid:</span>
+            <span id="successTotalAmount">₦29,500</span>
+          </div>
+        </div>
+
+        <button class="success-modal-button" onclick="closeSuccessModal()">
+          Continue Shopping
+        </button>
+      </div>
+    </div>
+
     <script src="script.js"></script>
+
+    <script>
+      ;(function () {
+        const form = document.getElementById('form')
+
+        let lastPaymentTime = 0
+        let attemptCount = 0
+
+        form.addEventListener('submit', (e) => {
+          e.preventDefault()
+
+          const now = Date.now()
+          const timeSinceLastPayment = now - lastPaymentTime
+
+          // ✅ If less than 2 seconds since last attempt, add delay
+          const delay = timeSinceLastPayment < 2000 ? 500 : 0
+
+          setTimeout(() => {
+            attemptCount++
+            console.log(`\n🔄 === PAYMENT ATTEMPT #${attemptCount} ===`)
+
+            const BushaCommerce = window.BushaCommerce
+
+            if (BushaCommerce) {
+              const email = document.getElementById('email').value
+
+              // ✅ Generate completely unique reference every time
+              const timestamp = Date.now()
+              const random1 = Math.random().toString(36).substring(2, 15)
+              const random2 = Math.random().toString(36).substring(2, 15)
+              const random3 = performance.now().toString().replace('.', '')
+              const freshReference = `ref_${timestamp}_${random1}${random2}_${random3}`
+
+              console.log('🔑 NEW Reference:', freshReference)
+              console.log(
+                '💰 Amount:',
+                document.getElementById('quote_amount').value
+              )
+              console.log(
+                '💱 Source Currency:',
+                document.getElementById('source_currency').value
+              )
+              console.log(
+                '🎯 Target Currency:',
+                document.getElementById('target_currency').value
+              )
+
+              const payload = {
+                // reference: freshReference,
+                public_key: document.getElementById('public_key').value,
+                quote_amount: String(
+                  document.getElementById('quote_amount').value
+                ),
+                quote_currency: document.getElementById('quote_currency').value,
+                target_currency:
+                  document.getElementById('target_currency').value,
+                source_currency:
+                  document.getElementById('source_currency').value,
+                callback_url:
+                  document.getElementById('callback_url').value || '',
+                onClose: () => {
+                  console.log('❌ Payment cancelled for:', freshReference)
+                  lastPaymentTime = 0 // ✅ Reset timer on close
+                },
+                onSuccess: (data) => {
+                  console.log('✅ Payment successful for:', freshReference)
+                  console.log('📦 Success data:', data)
+                  showSuccessModal('Crypto')
+                  lastPaymentTime = 0 // ✅ Reset timer on success
+                },
+              }
+
+              if (email) {
+                payload.meta = { email: email }
+              }
+
+              console.log('📦 Complete Payload:', payload)
+              console.log('=================================\n')
+
+              lastPaymentTime = now // ✅ Update last payment time
+
+              BushaCommerce(payload)
+            } else {
+              console.error('❌ BushaCommerce not loaded!')
+            }
+          }, delay)
+        })
+      })()
+    </script>
   </body>
 </html>
