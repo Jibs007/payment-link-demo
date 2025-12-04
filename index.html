@@ -263,7 +263,7 @@
             name="meta[phone_number]"
             value="+234 8039393939"
           />
-          <input type="hidden" name="reference" value="" id="reference" />
+          <!-- ❌ REMOVED: <input type="hidden" name="reference" value="" id="reference" /> -->
           <input type="hidden" name="callback_url" value="" id="callback_url" />
           <input type="hidden" name="parentOrigin" value="https://google.com" />
 
@@ -347,46 +347,87 @@
       ;(function () {
         const form = document.getElementById('form')
 
+        let lastPaymentTime = 0
+        let attemptCount = 0
+
         form.addEventListener('submit', (e) => {
           e.preventDefault()
 
-          const BushaCommerce = window.BushaCommerce
+          const now = Date.now()
+          const timeSinceLastPayment = now - lastPaymentTime
 
-          if (BushaCommerce) {
-            console.log('BushaCommerce initialized!')
+          // ✅ If less than 2 seconds since last attempt, add delay
+          const delay = timeSinceLastPayment < 2000 ? 500 : 0
 
-            const email = document.getElementById('email').value
+          setTimeout(() => {
+            attemptCount++
+            console.log(`\n🔄 === PAYMENT ATTEMPT #${attemptCount} ===`)
 
-            const payload = {
-              reference:
-                document.getElementById('reference').value ||
-                `ref_${new Date().getTime()}`,
-              public_key: document.getElementById('public_key').value,
-              quote_amount: String(
+            const BushaCommerce = window.BushaCommerce
+
+            if (BushaCommerce) {
+              const email = document.getElementById('email').value
+
+              // ✅ Generate completely unique reference every time
+              const timestamp = Date.now()
+              const random1 = Math.random().toString(36).substring(2, 15)
+              const random2 = Math.random().toString(36).substring(2, 15)
+              const random3 = performance.now().toString().replace('.', '')
+              const freshReference = `ref_${timestamp}_${random1}${random2}_${random3}`
+
+              console.log('🔑 NEW Reference:', freshReference)
+              console.log(
+                '💰 Amount:',
                 document.getElementById('quote_amount').value
-              ),
-              quote_currency: document.getElementById('quote_currency').value,
-              target_currency: document.getElementById('target_currency').value,
-              source_currency: document.getElementById('source_currency').value,
-              callback_url: document.getElementById('callback_url').value || '',
-              onClose: () => {
-                console.log('Payment cancelled!')
-                document.getElementById(
-                  'reference'
-                ).value = `ref_${new Date().getTime()}`
-              },
-              onSuccess: (data) => {
-                console.log('Payment successful:', data)
-                showSuccessModal('Crypto')
-              },
-            }
+              )
+              console.log(
+                '💱 Source Currency:',
+                document.getElementById('source_currency').value
+              )
+              console.log(
+                '🎯 Target Currency:',
+                document.getElementById('target_currency').value
+              )
 
-            if (email) {
-              payload.meta = { email: email }
-            }
+              const payload = {
+                // reference: freshReference,
+                public_key: document.getElementById('public_key').value,
+                quote_amount: String(
+                  document.getElementById('quote_amount').value
+                ),
+                quote_currency: document.getElementById('quote_currency').value,
+                target_currency:
+                  document.getElementById('target_currency').value,
+                source_currency:
+                  document.getElementById('source_currency').value,
+                callback_url:
+                  document.getElementById('callback_url').value || '',
+                onClose: () => {
+                  console.log('❌ Payment cancelled for:', freshReference)
+                  lastPaymentTime = 0 // ✅ Reset timer on close
+                },
+                onSuccess: (data) => {
+                  console.log('✅ Payment successful for:', freshReference)
+                  console.log('📦 Success data:', data)
+                  showSuccessModal('Crypto')
+                  lastPaymentTime = 0 // ✅ Reset timer on success
+                },
+              }
 
-            BushaCommerce(payload)
-          }
+              if (email) {
+                payload.meta = { email: email }
+              }
+
+              console.log('📦 Complete Payload:', payload)
+              console.log('=================================\n')
+
+              lastPaymentTime = now // ✅ Update last payment time
+
+              BushaCommerce(payload)
+            } else {
+              console.error('❌ BushaCommerce not loaded!')
+            }
+          }, delay)
         })
       })()
     </script>
