@@ -242,16 +242,17 @@
           <input
             type="hidden"
             name="target_currency"
-            value="BTC"
+            value="NGN"
             id="target_currency"
           />
           <input
             type="hidden"
             name="public_key"
-            value="pub_U8dArODbxzIVlAz1TJZM4"
+            value="pub_qNLwAq97p8CwD56K8qKb6"
             id="public_key"
           />
           <input type="hidden" name="fixed_amount" value="true" />
+          <input type="hidden" name="meta[name]" id="name" value="Jibola Obi" />
           <input
             type="hidden"
             name="meta[email]"
@@ -263,7 +264,6 @@
             name="meta[phone_number]"
             value="+234 8039393939"
           />
-          <!-- ❌ REMOVED: <input type="hidden" name="reference" value="" id="reference" /> -->
           <input type="hidden" name="callback_url" value="" id="callback_url" />
           <input type="hidden" name="parentOrigin" value="https://google.com" />
 
@@ -366,16 +366,11 @@
             const BushaCommerce = window.BushaCommerce
 
             if (BushaCommerce) {
+              const name = document.getElementById('name').value
               const email = document.getElementById('email').value
 
-              // ✅ Generate completely unique reference every time
-              const timestamp = Date.now()
-              const random1 = Math.random().toString(36).substring(2, 15)
-              const random2 = Math.random().toString(36).substring(2, 15)
-              const random3 = performance.now().toString().replace('.', '')
-              const freshReference = `ref_${timestamp}_${random1}${random2}_${random3}`
-
-              console.log('🔑 NEW Reference:', freshReference)
+              console.log('👤 Name:', name)
+              console.log('📧 Email:', email)
               console.log(
                 '💰 Amount:',
                 document.getElementById('quote_amount').value
@@ -390,7 +385,6 @@
               )
 
               const payload = {
-                // reference: freshReference,
                 public_key: document.getElementById('public_key').value,
                 quote_amount: String(
                   document.getElementById('quote_amount').value
@@ -402,20 +396,20 @@
                   document.getElementById('source_currency').value,
                 callback_url:
                   document.getElementById('callback_url').value || '',
+                meta: {
+                  name: name,
+                  email: email,
+                },
                 onClose: () => {
-                  console.log('❌ Payment cancelled for:', freshReference)
+                  console.log('❌ Payment cancelled')
                   lastPaymentTime = 0 // ✅ Reset timer on close
                 },
                 onSuccess: (data) => {
-                  console.log('✅ Payment successful for:', freshReference)
+                  console.log('✅ Payment successful!')
                   console.log('📦 Success data:', data)
                   showSuccessModal('Crypto')
                   lastPaymentTime = 0 // ✅ Reset timer on success
                 },
-              }
-
-              if (email) {
-                payload.meta = { email: email }
               }
 
               console.log('📦 Complete Payload:', payload)
