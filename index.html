@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -373,21 +373,21 @@
               console.log('📧 Email:', email)
               console.log(
                 '💰 Amount:',
-                document.getElementById('quote_amount').value
+                document.getElementById('quote_amount').value,
               )
               console.log(
                 '💱 Source Currency:',
-                document.getElementById('source_currency').value
+                document.getElementById('source_currency').value,
               )
               console.log(
                 '🎯 Target Currency:',
-                document.getElementById('target_currency').value
+                document.getElementById('target_currency').value,
               )
 
               const payload = {
                 public_key: document.getElementById('public_key').value,
                 quote_amount: String(
-                  document.getElementById('quote_amount').value
+                  document.getElementById('quote_amount').value,
                 ),
                 quote_currency: document.getElementById('quote_currency').value,
                 target_currency:
@@ -400,6 +400,7 @@
                   name: name,
                   email: email,
                 },
+                devMode: true,
                 onClose: () => {
                   console.log('❌ Payment cancelled')
                   lastPaymentTime = 0 // ✅ Reset timer on close
